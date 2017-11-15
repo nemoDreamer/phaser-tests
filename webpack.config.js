@@ -10,12 +10,10 @@ var source  = path.join(__dirname, 'src'),
     entry   = path.join(source, main);
 
 module.exports = {
-    entry: [
-        entry,
-        'webpack-dev-server/client?http://localhost:8080'
-    ],
+    entry: entry,
 
     output: {
+        path:       content,
         publicPath: '/',
         filename:   min
     },

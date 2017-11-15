@@ -21,6 +21,7 @@
     "build": "npm run build:html && npm run build:assets && npm run build:js",
     "prebuild": "npm run clean",
     "prebuild:js": "npm run lint",
+    "update:phaser": "rimraf static/assets/phaser/* && mkdirp static/assets/phaser && cp node_modules/phaser-ce/build/phaser.* static/assets/phaser",
     "start": "webpack-dev-server --port 8001 --inline --hot --progress --open"
   },
   "devDependencies": {
@@ -59,5 +60,8 @@
         }
       ]
     }
+  },
+  "dependencies": {
+    "phaser-ce": "^2.9.2"
   }
 }

@@ -21,7 +21,7 @@
     "build": "npm run build:html && npm run build:assets && npm run build:js",
     "prebuild": "npm run clean",
     "prebuild:js": "npm run lint",
-    "start": "webpack-dev-server --port 8001 --inline --hot"
+    "start": "webpack-dev-server --port 8001 --inline --hot --progress --open"
   },
   "devDependencies": {
     "babel-core": "^6.3.26",

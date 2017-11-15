@@ -3,8 +3,10 @@
 var path    = require('path'),
     webpack = require('webpack');
 
+var is_server = /webpack-dev-server/.test(process.env.npm_lifecycle_script);
+
 var source  = path.join(__dirname, 'src'),
-    content = path.join(__dirname, 'static'),
+    content = path.join(__dirname, is_server ? 'static' : 'dist'),
     main    = 'main.js',
     min     = 'main.min.js',
     entry   = path.join(source, main);
@@ -14,7 +16,6 @@ module.exports = {
 
     output: {
         path:       content,
-        publicPath: '/',
         filename:   min
     },
 
@@ -35,6 +36,7 @@ module.exports = {
     },
 
     devServer: {
-        contentBase: content
+        contentBase: content,
+        publicPath: '/',
     }
 }

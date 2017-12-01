@@ -1,32 +1,34 @@
 /* eslint-disable */
-
-'use strict';
-
-var path = require('path'),
-    webpack = require('webpack');
+var path = require('path');
+var webpack = require('webpack');
 
 var is_server = /webpack-dev-server/.test(process.env.npm_lifecycle_script);
 
-var rootDir = path.resolve(__dirname),
-    phaserModules = path.join(rootDir, 'node_modules', 'phaser-ce', 'build', 'custom'),
-    source = path.join(rootDir, 'src'),
-    content = path.join(
-        rootDir, is_server
-        ? 'static'
-        : 'dist'),
-    main = 'main.js',
-    min = 'main.min.js',
-    entry = path.join(source, main);
+var root_dir = path.resolve(__dirname);
 
-var pixi = path.join(phaserModules, 'pixi.js');
-var phaser = path.join(phaserModules, 'phaser-minimum.js');
+var source = path.join(root_dir, 'src');
+var content = path.join(root_dir, is_server ? 'static' : 'dist');
+var phaser_modules = path.join(
+    root_dir,
+    'node_modules',
+    'phaser-ce',
+    'build',
+    'custom',
+);
+
+var main = 'main.js';
+var min = 'main.min.js';
+var entry = path.join(source, main);
+
+var pixi = path.join(phaser_modules, 'pixi.js');
+var phaser = path.join(phaser_modules, 'phaser-minimum.js');
 
 module.exports = {
-    entry: entry,
+    entry,
 
     output: {
         path: content,
-        filename: min
+        filename: min,
     },
 
     devtool: 'source-map',
@@ -34,8 +36,8 @@ module.exports = {
     resolve: {
         alias: {
             pixi: pixi,
-            phaser: phaser
-        }
+            phaser: phaser,
+        },
     },
 
     module: {
@@ -45,14 +47,15 @@ module.exports = {
                 test: pixi,
                 use: {
                     loader: 'expose-loader',
-                    options: 'PIXI'
-                }
-            }, {
+                    options: 'PIXI',
+                },
+            },
+            {
                 test: phaser,
                 use: {
                     loader: 'expose-loader',
-                    options: 'Phaser'
-                }
+                    options: 'Phaser',
+                },
             },
             // pass source through babel
             {
@@ -62,14 +65,14 @@ module.exports = {
                 // query: {
                 //     presets: ['es2015']
                 // }
-            }
-        ]
+            },
+        ],
     },
 
     devServer: {
         contentBase: content,
-        publicPath: '/'
+        publicPath: '/',
     },
 
-    plugins: [new webpack.LoaderOptionsPlugin({debug: true})]
+    plugins: [new webpack.LoaderOptionsPlugin({ debug: true })],
 };

@@ -1,13 +1,12 @@
 /* eslint-disable */
 var path = require('path');
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var is_server = /webpack-dev-server/.test(process.env.npm_lifecycle_script);
 
 var root_dir = path.resolve(__dirname);
-
-var source = path.join(root_dir, 'src');
-var content = path.join(root_dir, is_server ? 'static' : 'dist');
 var phaser_modules = path.join(
     root_dir,
     'node_modules',
@@ -16,27 +15,34 @@ var phaser_modules = path.join(
     'custom',
 );
 
-var main = 'main.js';
-var min = 'main.min.js';
-var entry = path.join(source, main);
+var paths = {
+    static: path.join(root_dir, 'static'),
+    source: path.join(root_dir, 'src'),
+    content: path.join(root_dir, 'dist'), // is_server ? 'static' : 'dist');
+    pixi: path.join(phaser_modules, 'pixi.js'),
+    phaser: path.join(phaser_modules, 'phaser-arcade-physics.js'),
+};
 
-var pixi = path.join(phaser_modules, 'pixi.js');
-var phaser = path.join(phaser_modules, 'phaser-minimum.js');
+var entry = {
+    'test-1': path.join(paths.source, 'test-1', 'main.js'),
+    'test-2': path.join(paths.source, 'test-2.js'),
+};
 
 module.exports = {
     entry,
 
     output: {
-        path: content,
-        filename: min,
+        path: paths.content,
+        filename: '[name].min.js',
+        sourceMapFilename: '[name].js.map',
     },
 
     devtool: 'source-map',
 
     resolve: {
         alias: {
-            pixi: pixi,
-            phaser: phaser,
+            pixi: paths.pixi,
+            phaser: paths.phaser,
         },
     },
 
@@ -44,14 +50,14 @@ module.exports = {
         rules: [
             // exposing pixi and correct phaser into global scope
             {
-                test: pixi,
+                test: paths.pixi,
                 use: {
                     loader: 'expose-loader',
                     options: 'PIXI',
                 },
             },
             {
-                test: phaser,
+                test: paths.phaser,
                 use: {
                     loader: 'expose-loader',
                     options: 'Phaser',
@@ -60,19 +66,37 @@ module.exports = {
             // pass source through babel
             {
                 test: /\.js$/,
-                include: source,
+                include: path.join(paths.source),
+                exclude: /node_modules/,
                 loader: 'babel-loader',
-                // query: {
-                //     presets: ['es2015']
-                // }
+                query: {
+                    presets: ['env'],
+                },
             },
         ],
     },
 
     devServer: {
-        contentBase: content,
+        contentBase: paths.content,
         publicPath: '/',
     },
 
-    plugins: [new webpack.LoaderOptionsPlugin({ debug: true })],
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ debug: true }),
+        new webpack.optimize.CommonsChunkPlugin('common'),
+        new CopyWebpackPlugin([
+            {
+                from: path.join(paths.static),
+                to: path.join(paths.content),
+            },
+        ]),
+    ].concat(
+        Object.keys(entry).map(function(name) {
+            return new HtmlWebpackPlugin({
+                chunks: ['common', name],
+                template: path.resolve(paths.source, 'index.html'),
+                filename: name + '.html',
+            });
+        }),
+    ),
 };

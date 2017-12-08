@@ -1,8 +1,13 @@
-phaser-yo-babel-webpack
+phaser-tests
 ============
 
-Author  | AUTHOR
-Company | COMPANY
-Date    | DATE
+Playing around in Phaser...
 
-Game description...
+## Installation
+
+```bash
+npm install
+
+npm run build # -> ./dist/
+# or
+npm start # -> dev server at http://localhost:8001

@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "phaser-ce": "^2.9.2",
-    "phaser-tilemap-plus": "^0.10.1"
+    "phaser-tilemap-plus": "^0.10.1",
+    "rot-js": "^0.6.4"
   }
 }

@@ -23,7 +23,7 @@ class Game {
 
         this.load.tilemap(
             'Tilemap',
-            'assets/maps/hecatomb.json',
+            'assets/maps/hecatomb_01.json',
             null,
             Phaser.Tilemap.TILED_JSON,
         );

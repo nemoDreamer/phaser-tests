@@ -26,6 +26,7 @@ var paths = {
 var entry = {
     'test-1': path.join(paths.source, 'test-1', 'main.js'),
     'test-2': path.join(paths.source, 'test-2.js'),
+    'test-3': path.join(paths.source, 'test-3.js'),
 };
 
 module.exports = {

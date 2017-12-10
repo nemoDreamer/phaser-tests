@@ -11,7 +11,7 @@ import { easeInQuad as easeFov, easeInCubic as easeFow } from './shared/utils';
 // --------------------------------------------------
 
 // choose map:
-const MAP_NAME = 'enzo_02';
+const MAP_NAME = 'generated_01';
 // choose mode:
 const MODE = 'fow'; // 'fov' (Field Of View) or 'fow' (Fog of War)
 
@@ -31,6 +31,10 @@ const MAP = {
         height: 24,
     },
     enzo_02: {
+        width: 32,
+        height: 24,
+    },
+    generated_01: {
         width: 32,
         height: 24,
     },
@@ -95,12 +99,18 @@ class Game {
         // this.FOV = new FOV.PreciseShadowcasting((x, y) => {
         this.FOV = new FOV.RecursiveShadowcasting((x, y) => {
             const tile = this.tilemap.getTile(x, y, this.groundLayer);
-            return !tile || !tile.properties.collides;
+            return (
+                !tile || (!tile.properties.collides && !tile.properties.secret)
+            );
         });
 
         // crude "player"
-        this.playerX = 10;
-        this.playerY = 2;
+        const playerTile =
+            this.tilemap.searchTileIndex(40, 0, false, this.monstersLayer) ||
+            {};
+        this.playerX = playerTile.x || 10;
+        this.playerY = playerTile.y || 2;
+        this.tilemap.removeTile(playerTile.x, playerTile.y, this.monstersLayer);
 
         this.fovAtPlayerXY();
 

@@ -80,3 +80,28 @@ maps.forEach(config => {
         });
     }
 });
+
+// ==================================================
+
+const output = Array(h)
+    .fill(undefined)
+    .map(() => Array(w).fill(undefined));
+
+new ROT.Map.Digger(32, 24, {
+    corridorLength: [1, 10],
+    dugPercentage: 0.5,
+})
+    .create((x, y, wall) => {
+        // NOTE: first `y`, then `x`, since the outer Array is the _rows_!
+        output[y][x] = wall ? 11 : 1;
+    })
+    .getRooms()
+    .forEach(room => {
+        room.getDoors((x, y) => {
+            output[y][x] = 21;
+        });
+    });
+
+// for Tiled CSV data:
+// eslint-disable-next-line no-console
+console.log([].concat(...output).join());

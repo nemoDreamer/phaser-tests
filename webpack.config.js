@@ -23,11 +23,45 @@ var paths = {
     phaser: path.join(phaser_modules, 'phaser-arcade-physics.js'),
 };
 
-var entry = {
-    'test-1': path.join(paths.source, 'test-1', 'main.js'),
-    'test-2': path.join(paths.source, 'test-2.js'),
-    'test-3': path.join(paths.source, 'test-3.js'),
-};
+var entries = [
+    {
+        name: 'test-1',
+        path: path.join(paths.source, 'test-1', 'main.js'),
+        commons: ['phaser_and_pixi'],
+    },
+    {
+        name: 'test-2',
+        path: path.join(paths.source, 'test-2.js'),
+        commons: ['phaser_and_pixi', 'tilemap_plus_and_rot_wrapper'],
+    },
+    {
+        name: 'test-3',
+        path: path.join(paths.source, 'test-3.js'),
+        commons: ['phaser_and_pixi', 'tilemap_plus_and_rot_wrapper'],
+    },
+    {
+        name: 'test-4',
+        path: path.join(paths.source, 'test-4.js'),
+        commons: [
+            /*'rot_module'*/
+        ],
+    },
+];
+
+// NOTE: `entry` is an Object of { 'test-1': "test-1.js", 'test-2': "test-2.js" }
+var entry = entries.reduce((obj, entry) => {
+    obj[entry.name] = entry.path;
+    return obj;
+}, {});
+
+// NOTE: gathers each unique common and pushes each entry that needs it onto it:
+var commons = {};
+entries.forEach(function(entry) {
+    entry.commons.forEach(function(common) {
+        commons[common] = commons[common] || [];
+        commons[common].push(entry.name);
+    });
+});
 
 module.exports = {
     entry,
@@ -84,7 +118,6 @@ module.exports = {
 
     plugins: [
         new webpack.LoaderOptionsPlugin({ debug: true }),
-        new webpack.optimize.CommonsChunkPlugin('common'),
         new CopyWebpackPlugin([
             {
                 from: path.join(paths.static),
@@ -92,11 +125,17 @@ module.exports = {
             },
         ]),
     ].concat(
-        Object.keys(entry).map(function(name) {
+        Object.keys(commons).map(function(common) {
+            return new webpack.optimize.CommonsChunkPlugin({
+                name: common,
+                chunks: commons[common],
+            });
+        }),
+        entries.map(function(entry) {
             return new HtmlWebpackPlugin({
-                chunks: ['common', name],
+                chunks: [entry.name].concat(entry.commons),
                 template: path.resolve(paths.source, 'index.html'),
-                filename: name + '.html',
+                filename: entry.name + '.html',
             });
         }),
     ),

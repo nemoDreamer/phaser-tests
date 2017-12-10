@@ -11,7 +11,7 @@ import { easeInQuad as easeFov, easeInCubic as easeFow } from './shared/utils';
 // --------------------------------------------------
 
 // choose map:
-const MAP_NAME = 'hecatomb_02';
+const MAP_NAME = 'enzo_02';
 // choose mode:
 const MODE = 'fow'; // 'fov' (Field Of View) or 'fow' (Fog of War)
 
@@ -26,7 +26,11 @@ const MAP = {
         width: 32,
         height: 16,
     },
-    enzos_map: {
+    enzo_01: {
+        width: 32,
+        height: 24,
+    },
+    enzo_02: {
         width: 32,
         height: 24,
     },

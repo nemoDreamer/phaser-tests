@@ -1,8 +1,3 @@
-/* eslint-disable
-    no-param-reassign,
-    no-plusplus
-*/
-
 // http://gizma.com/easing/#cub1
 
 export const easeLinear = (t, b, c, d) => c * t / d + b;

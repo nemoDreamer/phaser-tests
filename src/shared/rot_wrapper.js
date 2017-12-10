@@ -4,10 +4,8 @@
     no-unused-vars,
     one-var,
     default-case,
-    no-plusplus,
     prefer-destructuring,
-    no-continue,
-    no-param-reassign
+    no-continue
 */
 
 const ROT = {

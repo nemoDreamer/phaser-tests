@@ -4,8 +4,7 @@ import 'pixi';
 import { Phaser } from 'phaser';
 import 'phaser-tilemap-plus';
 
-// import { FOV } from 'rot-js';
-import { FOV } from './shared/rot_wrapper';
+import { FOV } from 'rot-js';
 import { easeInQuad as easeFov, easeInCubic as easeFow } from './shared/utils';
 
 // --------------------------------------------------

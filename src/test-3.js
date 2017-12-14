@@ -139,29 +139,63 @@ class Game {
             moved = true;
         }
 
-        // crudefi player/tile "collision"
-        const tile = this.tilemap.getTile(
-            this.playerX,
-            this.playerY,
-            this.groundLayer,
-        );
-        if (
-            tile &&
-            tile.properties.collides &&
-            // "secret" tiles can be passed through
-            !tile.properties.secret
-        ) {
-            this.playerX = oldPlayerX;
-            this.playerY = oldPlayerY;
-        }
-
         // has moved?
-        if (
-            moved &&
-            (oldPlayerX !== this.playerX || oldPlayerY !== this.playerY)
-        ) {
-            // re-generate FOV layer!
-            this.fovAtPlayerXY();
+        if (moved) {
+            // crude player/tile "collision"
+            const groundTile = this.tilemap.getTile(
+                this.playerX,
+                this.playerY,
+                this.groundLayer,
+            );
+
+            if (
+                groundTile &&
+                groundTile.properties.collides &&
+                // "secret" tiles can be passed through
+                !groundTile.properties.secret
+            ) {
+                this.playerX = oldPlayerX;
+                this.playerY = oldPlayerY;
+            }
+
+            // crude item "pickup"
+            const itemsTile = this.tilemap.getTile(
+                this.playerX,
+                this.playerY,
+                this.itemsLayer,
+            );
+
+            // keys: 23-27
+            // spear: 28
+            // dagger: 29
+            // money: 30
+            if (itemsTile && itemsTile.index >= 23 && itemsTile.index <= 30) {
+                this.tilemap.removeTile(
+                    this.playerX,
+                    this.playerY,
+                    this.itemsLayer,
+                );
+
+                if (itemsTile.index >= 23 && itemsTile.index <= 27) {
+                    // NOTE: tilemap-plus' animated tiles are hanging around, so remove thisanimated location from its array
+
+                    const anim = this.tilemap.plus.animation.tileAnimations.find(
+                        animation => animation.frames[0].tileId === 22,
+                    );
+                    const ind = anim.tileLocations.findIndex(
+                        location =>
+                            location.x === this.playerX &&
+                            location.y === this.playerY,
+                    );
+
+                    anim.tileLocations.splice(ind, 1);
+                }
+            }
+
+            if (oldPlayerX !== this.playerX || oldPlayerY !== this.playerY) {
+                // re-generate FOV layer!
+                this.fovAtPlayerXY();
+            }
         }
     }
 

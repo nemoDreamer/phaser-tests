@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import ROT from 'rot-js';
 
 const w = 32;
@@ -49,7 +51,7 @@ const maps = [
 
 const displayOptions = { width: w, height: h, fontSize: 8 };
 
-maps.forEach(config => {
+maps.forEach((config, index) => {
     const display = new ROT.Display(displayOptions);
 
     const canvas = display.getContainer();
@@ -59,6 +61,23 @@ maps.forEach(config => {
     const type = config[0];
     const map = config[1];
 
+    const output = Array(h)
+        .fill(undefined)
+        .map(() => Array(w).fill(undefined));
+
+    const storeAndDisplayWalls = (x, y, wall) => {
+        // NOTE: first `y`, then `x`, since the outer Array is the _rows_!
+        output[y][x] = wall ? 11 : 1;
+
+        display.DEBUG(x, y, wall);
+    };
+
+    const storeAndDisplayDoors = (x, y) => {
+        output[y][x] = 21;
+
+        display.draw(x, y, '', '', 'red');
+    };
+
     if (type === 'cellular') {
         map.randomize(config[2] || 0.5);
 
@@ -67,41 +86,18 @@ maps.forEach(config => {
             map.create();
         }
 
-        map.connect(display.DEBUG);
+        map.connect(storeAndDisplayWalls);
     } else {
-        map.create(display.DEBUG);
+        map.create(storeAndDisplayWalls);
     }
 
     if (type === 'dungeon') {
         map.getRooms().forEach(room => {
-            room.getDoors((x, y) => {
-                display.draw(x, y, '', '', 'red');
-            });
+            room.getDoors(storeAndDisplayDoors);
         });
     }
+
+    // for Tiled CSV data:
+    console.log(`==== MAP index ${index}`, config);
+    console.log([].concat(...output).join());
 });
-
-// ==================================================
-
-const output = Array(h)
-    .fill(undefined)
-    .map(() => Array(w).fill(undefined));
-
-new ROT.Map.Digger(32, 24, {
-    corridorLength: [1, 10],
-    dugPercentage: 0.5,
-})
-    .create((x, y, wall) => {
-        // NOTE: first `y`, then `x`, since the outer Array is the _rows_!
-        output[y][x] = wall ? 11 : 1;
-    })
-    .getRooms()
-    .forEach(room => {
-        room.getDoors((x, y) => {
-            output[y][x] = 21;
-        });
-    });
-
-// for Tiled CSV data:
-// eslint-disable-next-line no-console
-console.log([].concat(...output).join());

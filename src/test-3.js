@@ -10,9 +10,9 @@ import { easeInQuad as easeFov, easeInCubic as easeFow } from './shared/utils';
 // --------------------------------------------------
 
 // choose map:
-const MAP_NAME = 'generated_01';
+const MAP_NAME = 'generated_05';
 // choose mode:
-const MODE = 'fow'; // 'fov' (Field Of View) or 'fow' (Fog of War)
+const MODE = 'fov'; // 'fov' (Field Of View) or 'fow' (Fog of War)
 
 // --------------------------------------------------
 
@@ -25,21 +25,20 @@ const MAP = {
         width: 32,
         height: 16,
     },
-    enzo_01: {
-        width: 32,
-        height: 24,
-    },
-    enzo_02: {
-        width: 32,
-        height: 24,
-    },
-    generated_01: {
-        width: 32,
-        height: 24,
-    },
+    enzo_01: {},
+    enzo_02: {},
+    generated_01: {},
+    generated_02: {},
+    generated_03: {},
+    generated_04: {},
+    generated_05: {},
+    generated_06: {},
+    generated_07: {},
 }[MAP_NAME];
 
 MAP.name = MAP_NAME;
+MAP.width = MAP.width || 32;
+MAP.height = MAP.height || 24;
 
 const WIDTH = 11 * MAP.width;
 const HEIGHT = 11 * MAP.height;
@@ -107,8 +106,8 @@ class Game {
         const playerTile =
             this.tilemap.searchTileIndex(40, 0, false, this.monstersLayer) ||
             {};
-        this.playerX = playerTile.x || 10;
-        this.playerY = playerTile.y || 2;
+        this.playerX = playerTile.x || 0;
+        this.playerY = playerTile.y || 0;
         this.tilemap.removeTile(playerTile.x, playerTile.y, this.monstersLayer);
 
         this.fovAtPlayerXY();

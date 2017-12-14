@@ -1,7 +1,7 @@
 phaser-tests
 ============
 
-Playing around in Phaser...
+Playing around in Phaser (+ Tilemap-Plus, rot.js...)
 
 ## Installation
 
